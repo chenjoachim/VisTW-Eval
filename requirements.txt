@@ -1,0 +1,6 @@
+datasets
+huggingface
+openai
+anthropic
+google-generativeai
+together
