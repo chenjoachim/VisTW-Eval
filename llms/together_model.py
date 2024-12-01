@@ -49,7 +49,7 @@ class TogetherModel:
 
 if __name__ == "__main__":
     from PIL import Image
-    image = Image.open('static/cover.jpg')
+    image = Image.open('replacement_images/5cd0f0daf3acc.jpg')
     llm = TogetherModel(model_name="meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo")
     res_text, res_info = llm(prompt="請用中文敘述一下",image=image)
     print(res_text)

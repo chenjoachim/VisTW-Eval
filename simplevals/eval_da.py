@@ -14,7 +14,7 @@ from .utils import (
     VALID_DATASETS
 )
 
-BASELINE_PROMPT = """回答一下的多選題問題。並且在回覆的最後記得講格式： 答案: $字母 而字母是 ABCD 的其中一個。直接給我答案回覆，不要給我任何習考的不週，Do not think step by step。你必須使用中文回答。
+BASELINE_PROMPT = """回答以下的多選題問題。並且在回覆的最後記得講格式： 答案: $字母 而字母是 ABCD 的其中一個。直接給我答案回覆，不要給我任何習考的不週，Do not think step by step。你必須使用中文回答。
 
 """
 

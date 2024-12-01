@@ -117,11 +117,3 @@ class Gemini:
             ChatSession object
         """
         return self.model.start_chat(history=history)
-
-if __name__ == "__main__":
-    from PIL import Image
-    image = Image.open('static/cover.jpg')
-    llm = Gemini()
-    res_text, res_info = llm(prompt="請用中文敘述一下",image=image)
-    print(res_text)
-    print(res_info)

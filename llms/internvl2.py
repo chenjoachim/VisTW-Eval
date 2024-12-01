@@ -142,7 +142,7 @@ class InternVL2:
 
 if __name__ == "__main__":
     from PIL import Image
-    image = Image.open('static/cover.jpg')
+    image = Image.open('failed.jpg')
     llm = InternVL2("OpenGVLab/InternVL2-1B")
     res_text, res_info = llm(prompt="請用中文敘述一下",image=image)
     print(res_text)

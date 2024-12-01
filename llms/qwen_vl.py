@@ -302,11 +302,10 @@ class QwenVL:
                 'num_output_tokens': len(generated_ids[0][inputs.input_ids.shape[1]:])
             }
         return output_text[0], res_info
-        
 
 if __name__ == "__main__":
     from PIL import Image
-    image = Image.open('static/cover.jpg')
+    image = Image.open('replacement_images/5cd0f0daf3acc.jpg')
     llm = QwenVL()
     res_text, res_info = llm(prompt="請用中文敘述一下",image=image)
     print(res_text)

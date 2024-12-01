@@ -82,7 +82,7 @@ class CogVLM2:
 
 if __name__ == "__main__":
     from PIL import Image
-    image = Image.open('static/cover.jpg')
+    image = Image.open('replacement_images/5cd0f0daf3acc.jpg')
     llm = CogVLM2()
     res_text, res_info = llm(prompt="請用中文敘述一下",image=image)
     print(res_text)

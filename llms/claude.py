@@ -64,7 +64,7 @@ class ClaudeChat():
 
 if __name__ == "__main__":
     from PIL import Image
-    image = Image.open("static/cover.jpg")
+    image = Image.open("659b87ba93383.jpg")
     llm = ClaudeChat(model_name="claude-3-haiku-20240307")
     res_text, res_info = llm(prompt="What is in this image", image=image)
     print(res_text)
