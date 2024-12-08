@@ -67,9 +67,6 @@ def get_llm(model_name: str, series: str = None):
     elif series == 'mllama':
         from llms.llama_vision import LLaMAVision
         return LLaMAVision(model_name)
-    elif series == 'glmv4':
-        from llms.glmv4 import GLMv4
-        return GLMv4(model_name)
     elif series == 'llava':
         from llms.llava import LLaVA
         return LLaVA(model_name)
