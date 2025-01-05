@@ -73,6 +73,9 @@ def get_llm(model_name: str, series: str = None):
     elif series == 'ds':
         from llms.deepseek_vl import DeepSeekVL
         return DeepSeekVL(model_name)
+    elif series == 'ds2':
+        from llms.deepseek_vl import DeepSeekVL2
+        return DeepSeekVL2(model_name)
     elif series == 'thudm':
         from llms.cogvlm2 import CogVLM2
         return CogVLM2(model_name)

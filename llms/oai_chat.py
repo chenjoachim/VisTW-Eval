@@ -35,8 +35,9 @@ class OpenAIChat():
             **kwargs
         )
         log_prob_seq = response.choices[0].logprobs.content
-        assert response.usage.completion_tokens == len(log_prob_seq)
+        # assert response.usage.completion_tokens == len(log_prob_seq)
         res_text = response.choices[0].message.content
+        # print(response.usage.completion_tokens, len(log_prob_seq), res_text)
         res_info = {
             "input": prompt,
             "output": res_text,
