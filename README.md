@@ -1,6 +1,5 @@
 # evaluation
-
-![TARO on yellow sticker](static/cover.jpg)
+WIP
 
 Evaluation code for benchmarking Taiwan vision benchmarks
 
