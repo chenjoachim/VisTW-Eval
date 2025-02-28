@@ -27,7 +27,7 @@ class MRPomptV3Patch(MRPromptV3):
             elif x['type'] == 'image':
                 if isinstance(x['image_path'], str):
                     image = Image.open(x['image_path']).convert('RGB')
-                elif isinstance(x['image_path'], Image):
+                elif isinstance(x['image_path'], Image.Image):
                     image = x['image_path'].convert('RGB')
 
                 pixel_values = load_image(image)
@@ -41,7 +41,6 @@ class MRPomptV3Patch(MRPromptV3):
             else:
                 raise ValueError('unknown type in the content')
         return content, pixel_values
-
 
 
 class Breeze2:
