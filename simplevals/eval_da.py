@@ -59,7 +59,7 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False):
         dataset = load_dataset('TMMU/mcqa_text_only', subject_name, split='test')
         logging_file = f"{subject_name}_text-da-{mode}_{str(llm)}.jsonl"
     else:
-        dataset = load_dataset('TMMU/mcqa_zeta', subject_name, split='test')
+        dataset = load_dataset('TMMU/tw-vision-mcqa', subject_name, split='test')
         logging_file = f"{subject_name}_da-{mode}_{str(llm)}.jsonl"
 
     stats = load_existing_entries(logging_file)
