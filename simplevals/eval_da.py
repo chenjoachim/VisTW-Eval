@@ -56,10 +56,10 @@ def process_question(row, llm, system_prompt, mode, stats, leetspeak=False):
 
 def eval_dataset(llm, subject_name, mode="image", text_ver=False):
     if text_ver:
-        dataset = load_dataset('TMMU/mcqa_text_only', subject_name, split='test')
+        dataset = load_dataset('TMMU/tw-text-exam-bench', subject_name, split='test')
         logging_file = f"{subject_name}_text-da-{mode}_{str(llm)}.jsonl"
     else:
-        dataset = load_dataset('TMMU/tw-vision-mcqa', subject_name, split='test')
+        dataset = load_dataset('TMMU/tw-vision-exam-bench', subject_name, split='test')
         logging_file = f"{subject_name}_da-{mode}_{str(llm)}.jsonl"
 
     stats = load_existing_entries(logging_file)
