@@ -62,7 +62,7 @@ def process_question(row, llm, mode, stats, system_prompt=''):
     })
 
     res_text, res_info = llm(log_entry["full_prompt"],
-                             image=None if mode == 'text' else row['image'],
+                             image=None if mode == 'text' else resize_image(row['image']),
                              max_tokens=2048
                 )
     stats['total'] += 1
