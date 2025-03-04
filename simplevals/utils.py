@@ -9,6 +9,38 @@ VALID_DATASETS = [
     'physics', 'sociology', 'statistics', 'structural_engineering', 'veterinary_medicine'
 ]
 
+MMMU_DATASETS = [
+   "Accounting",
+    "Agriculture",
+    "Architecture_and_Engineering",
+    "Art",
+    "Art_Theory",
+    "Basic_Medical_Science",
+    "Biology",
+    "Chemistry",
+    "Clinical_Medicine",
+    "Computer_Science",
+    "Design",
+    "Diagnostics_and_Laboratory_Medicine",
+    "Economics",
+    "Electronics",
+    "Energy_and_Power",
+    "Finance",
+    "Geography",
+    "History",
+    "Literature",
+    "Manage",
+    "Marketing",
+    "Materials",
+    "Math",
+    "Mechanical_Engineering",
+    "Music",
+    "Pharmacy",
+    "Physics",
+    "Psychology",
+    "Public_Health",
+    "Sociology"
+]
 def load_existing_entries(logging_file):
     full_path = os.path.join('execution_results', logging_file)
     print(full_path)
@@ -79,13 +111,33 @@ parser_prompt = """Extract the following ANSWER final answer, your answer should
 ANSWER:
 {response}
 
-Only response in one letter : A,B,C,D. You must only output one letter choice and nothing else.
+Only response in one letter : A,B,C,D,E,F,G. You must only output one letter choice and nothing else.
+RESPONSE:"""
+
+answer_comparison = """Determine if the [Response] and [Ground Truth] are choosing the same answer choice or not
+
+[Response]
+```
+{response}
+```
+
+[Ground Truth]
+```
+Answer choice : {valid_choice}
+```
+
+Only response in True/False, you should only output True if the selected choice in [Response] and [Ground Truth] is the same
 RESPONSE:"""
 
 def fallback_llm_as_parser(llm, response, valid_choice):
     prompt = parser_prompt.format(valid_choice=valid_choice, response=response)
     res_text, _ = llm(prompt)
     return res_text
+
+def is_both_same(llm, response, valid_choice):
+    prompt = answer_comparison.format(valid_choice=valid_choice, response=response)
+    res_text, _ = llm(prompt)
+    return res_text.strip().lower()
 
 
 def ensure_logging_dir():
@@ -130,23 +182,34 @@ def evaluate_regular(log_entry, extracted_answer, stats):
         log_entry["is_correct"] = False
 
 def evaluate_response(log_entry, mode, stats, sampler):
+
+    if isinstance(log_entry['ground_truth'], list):
+        match = re.search(r"答案\s*:\s*(\w+)", log_entry["normalized_response"])
+        if match:
+            extracted_answer = normalize_extracted_answer(match.group(1))
+        else:
+            extracted_answer = log_entry['ground_truth']
+
+        if 'true' in is_both_same(sampler, extracted_answer, ",".join(log_entry['ground_truth'])):
+            stats['hit'] += 1
+            stats['correct'] += 1
+            log_entry["is_correct"] = True
+        else:
+            log_entry["is_correct"] = False
+        stats['total'] += 1
+        log_entry["current_score"] = f"{stats['hit']}/{stats['total']}"
+        return None
     match = re.search(r"答案\s*:\s*(\w+)", log_entry["normalized_response"])
     if match:
         extracted_answer = normalize_extracted_answer(match.group(1))
         log_entry["extracted_answer"] = extracted_answer
-        if mode == "neg_mark":
-            evaluate_neg_mark(log_entry, extracted_answer, stats)
-        else:
-            evaluate_regular(log_entry, extracted_answer, stats)
+        evaluate_regular(log_entry, extracted_answer, stats)
     else:
         match = re.search(r"Answer\s*:\s*(\w+)", log_entry["normalized_response"])
         if match:
             extracted_answer = normalize_extracted_answer(match.group(1))
             log_entry["extracted_answer"] = extracted_answer
-            if mode == "neg_mark":
-                evaluate_neg_mark(log_entry, extracted_answer, stats)
-            else:
-                evaluate_regular(log_entry, extracted_answer, stats)
+            evaluate_regular(log_entry, extracted_answer, stats)
         else:# use llm to parse out which is the more valid choice
             selected_choice = 'A. '+log_entry['formatted_question'].split('A.')[-1]
             llm_response = log_entry['llm_response']
@@ -155,9 +218,4 @@ def evaluate_response(log_entry, mode, stats, sampler):
 
     stats['total'] += 1
     log_entry["current_score"] = f"{stats['hit']}/{stats['total']}"
-    if mode == "neg_mark":
-        log_entry.update({
-            "correct_answers": stats['correct'],
-            "negative_markings": stats['negative_markings']
-        })
 

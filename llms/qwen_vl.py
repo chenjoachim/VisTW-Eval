@@ -10,7 +10,7 @@ import requests
 from PIL import Image
 from torchvision import io, transforms
 from torchvision.transforms import InterpolationMode
-from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+from transformers import Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, AutoTokenizer, AutoProcessor
 from .utils import convert_pil2url
 
 IMAGE_FACTOR = 28
@@ -245,7 +245,8 @@ def process_vision_info(
 class QwenVL:
     
     def __init__(self, model_name: str = "Qwen/Qwen2-VL-7B-Instruct") -> None:
-        self.model = Qwen2VLForConditionalGeneration.from_pretrained(
+        cls_name = Qwen2_5_VLForConditionalGeneration if '2.5' in model_name else Qwen2VLForConditionalGeneration
+        self.model = cls_name.from_pretrained(
             model_name,
             torch_dtype="auto",
             device_map="auto",

@@ -11,17 +11,36 @@ from .utils import (
     evaluate_response,
     write_final_log,
     load_existing_entries,
-    VALID_DATASETS
+    VALID_DATASETS,
+    MMMU_DATASETS
 )
 
-BASELINE_PROMPT = """回答以下的多選題問題。並且在回覆的最後記得講格式： 答案: $字母 而字母是 ABCD 的其中一個。回答前請先一步一步(think step by step)想好答案。你必須使用中文回答。
+BASELINE_PROMPT = """回答以下的多選題問題。並且在回覆的最後記得講格式： 答案: $字母 而字母是 ABCDEFG 的其中一個。回答前請先一步一步(think step by step)想好答案。你必須使用中文回答。
 
 """
 
-choices = "ABCD"
+# we use this for CMMU
+MULTI_CHOICE_PROMPT = """回答以下的多选题问题。并且在回覆的最后记得以格式回答： 答案: $字母。回答前请先一步一步(think step by step)想好答案。你必须使用中文回答。
+
+"""
+
+choices = "ABCDEFG"
 
 sampler = get_llm('gpt-4o-mini')
 
+def get_row_id(row):
+    if 'qid' in row:
+        return row['qid']
+    elif 'id' in row:
+        return row['id']
+    assert ValueError('Unknown source')
+
+def get_question(row):
+    if 'question' in row:
+        return row['question']
+    elif 'question_info' in row:
+        return row['question_info']
+    assert ValueError('Unknown source')
 
 def format_question(row, mode, leetspeak=False):
     question = row['question']
@@ -29,21 +48,43 @@ def format_question(row, mode, leetspeak=False):
         question += f'\n{choice}. {row[choice]}'
     return question
 
+def cmmu_format_question(row, mode, leetspeak=False):
+    question = row['question_info']
+    for idx, option in enumerate(row['options']):
+        choice = choices[idx]
+        question += f'\n{choice}. {option}'
+    return question
 
-def process_question(row, llm, system_prompt, mode, stats, leetspeak=False):
-    log_entry = {"question_id": row['qid'] }
-    question = format_question(row, mode, leetspeak=leetspeak)
+def mmmu_format_question(row, mode, leetspeak=False):
+    question = row['question']
+    for idx, option in enumerate(eval(row['options'])):
+        choice = choices[idx]
+        question += f'\n{choice}. {option}'
+    return question
+
+def process_question(row, llm, system_prompt, mode, stats, leetspeak=False, src="exam"):
+    log_entry = {"question_id": get_row_id(row) }
+    if src == 'exam':
+        question = format_question(row, mode, leetspeak=leetspeak)
+    elif src == 'cmmu':
+        question = cmmu_format_question(row, mode, leetspeak=leetspeak)
+    elif src == 'mmmu':
+        question = mmmu_format_question(row, mode, leetspeak=leetspeak)
     ground_truth = row['answer']
-    
+
     log_entry.update({
-        "original_question": row['question'],
+        "original_question": get_question(row),
         "formatted_question": question,
         "ground_truth": ground_truth,
         "full_prompt": system_prompt + "\n\n" + question
     })
+    if src == 'mmmu':
+        image = row['image_1']
+    else:
+        image = row['image']
 
     res_text, res_info = llm(log_entry["full_prompt"],
-                             image=None if mode == 'text' else row['image'],
+                             image=None if mode == 'text' else image,
                              max_tokens=2048
                 )
     log_entry.update({
@@ -56,23 +97,34 @@ def process_question(row, llm, system_prompt, mode, stats, leetspeak=False):
     return log_entry
 
 
-def eval_dataset(llm, subject_name, mode="image", text_ver=False):
-    if text_ver:
-        dataset = load_dataset('TMMU/tw-text-exam-bench', subject_name, split='test')
-        logging_file = f"{subject_name}_text-cot-{mode}_{str(llm)}.jsonl"
+def eval_dataset(llm, subject_name, mode="image", text_ver=False, src="exam"):
+    if src == 'cmmu':
+        dataset = load_dataset("BAAI/CMMU", split="val")
+        logging_file = f"cmmu_cot-{mode}_{str(llm)}.jsonl"
+    elif src == 'mmmu':
+        dataset = load_dataset("MMMU/MMMU", subject_name, split="test")
+        logging_file = f"mmmu_{subject_name}_cot-{mode}_{str(llm)}.jsonl"        
     else:
-        dataset = load_dataset('TMMU/tw-vision-exam-bench', subject_name, split='test')
-        logging_file = f"{subject_name}_cot-{mode}_{str(llm)}.jsonl"
+        if text_ver:
+            dataset = load_dataset('TMMU/tw-text-exam-bench', subject_name, split='test')
+            logging_file = f"{subject_name}_text-cot-{mode}_{str(llm)}.jsonl"
+        else:
+            dataset = load_dataset('TMMU/tw-vision-exam-bench', subject_name, split='test')
+            logging_file = f"{subject_name}_cot-{mode}_{str(llm)}.jsonl"
 
     stats = load_existing_entries(logging_file)
     full_path = os.path.join('execution_results', logging_file)
     
     with open(full_path, 'a') as log_file:
         for idx, row in enumerate(tqdm(dataset, dynamic_ncols=True, initial=stats['total'])):
-            if row['qid'] in stats['existing_entries']:
+            if get_row_id(row) in stats['existing_entries']:
                 continue
-            system_prompt = BASELINE_PROMPT
-            log_entry = process_question(row, llm, system_prompt, mode, stats, leetspeak=False)
+
+            if src == 'cmmu' and row['type'] not in ('multiple-response', 'multiple-choice'):
+                continue
+
+            system_prompt = BASELINE_PROMPT if src == 'exam' else MULTI_CHOICE_PROMPT
+            log_entry = process_question(row, llm, system_prompt, mode, stats, leetspeak=False, src=src)
             json.dump(log_entry, log_file)
             log_file.write('\n')
             log_file.flush()
@@ -90,6 +142,10 @@ def parse_arguments() -> argparse.Namespace:
                         choices=["baseline", "image", "text"],
                         default="text",
                         help="Evaluation mode (default: baseline)")
+    parser.add_argument("--src",
+                        choices=["cmmu", "exam", "mmmu"],
+                        default="exam",
+                        help="Source of benchmark")
     parser.add_argument("--text_only",
                         action="store_true",
                         default=False,
@@ -104,13 +160,18 @@ def get_datasets_to_evaluate(selected_datasets: List[str]) -> List[str]:
 def main():
     args = parse_arguments()
     llm = get_llm(args.model_name, args.series)
-    datasets_to_evaluate = get_datasets_to_evaluate(args.datasets)
+    if args.src == 'cmmu':
+        datasets_to_evaluate = ['cmmu']
+    elif args.src == 'mmmu':
+        datasets_to_evaluate = MMMU_DATASETS if 'all' in args.datasets else args.datasets
+    else:
+        datasets_to_evaluate = get_datasets_to_evaluate(args.datasets)
 
     results = {}
     for dataset in datasets_to_evaluate:
         print(f"Evaluating {dataset}...")
         hit, total, correct, negative_markings = eval_dataset(llm, dataset,
-                    mode=args.mode, text_ver=args.text_only
+                    mode=args.mode, text_ver=args.text_only, src=args.src
                 )
         results[dataset] = {
             "score": hit / total,
