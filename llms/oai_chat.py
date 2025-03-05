@@ -15,7 +15,7 @@ class OpenAIChat():
         self.model_name = model_name
 
     def __str__(self):
-        return self.model_name
+        return self.model_name.split('/')[-1]
 
     @retry_with_exponential_backoff
     def __call__(self, prompt: str, image=None, max_tokens=1024, top_p=0.95, temperature=0.0, **kwargs) -> tuple[str, dict]:
@@ -34,7 +34,11 @@ class OpenAIChat():
             top_logprobs=self.TOP_LOGPROBS,
             **kwargs
         )
-        log_prob_seq = response.choices[0].logprobs.content
+        if response.choices[0].logprobs:
+            log_prob_seq = response.choices[0].logprobs.content
+        else:
+            log_prob_seq = []
+
         # assert response.usage.completion_tokens == len(log_prob_seq)
         res_text = response.choices[0].message.content
         # print(response.usage.completion_tokens, len(log_prob_seq), res_text)

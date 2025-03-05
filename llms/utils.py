@@ -108,6 +108,7 @@ def retry_with_exponential_backoff(
         anthropic.RateLimitError,
         urllib.error.HTTPError,
         urllib.error.URLError,
+        TypeError,
         ValueError, IndexError, UnboundLocalError
     )
     if has_groq:

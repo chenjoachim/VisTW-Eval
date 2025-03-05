@@ -19,6 +19,10 @@ BASELINE_PROMPT = """回答以下的多選題問題。並且在回覆的最後�
 
 """
 
+EN_BASELINE_PROMPT = """Answer the following question, think step by step before answering and make sure your final answer format is as follows: Answer: $ALPHABET.
+
+"""
+
 # we use this for CMMU
 MULTI_CHOICE_PROMPT = """回答以下的多选题问题。并且在回覆的最后记得以格式回答： 答案: $字母。回答前请先一步一步(think step by step)想好答案。你必须使用中文回答。
 
@@ -102,8 +106,8 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False, src="exam"):
         dataset = load_dataset("BAAI/CMMU", split="val")
         logging_file = f"cmmu_cot-{mode}_{str(llm)}.jsonl"
     elif src == 'mmmu':
-        dataset = load_dataset("MMMU/MMMU", subject_name, split="test")
-        logging_file = f"mmmu_{subject_name}_cot-{mode}_{str(llm)}.jsonl"        
+        dataset = load_dataset("MMMU/MMMU", subject_name, split="validation")
+        logging_file = f"mmmu_{subject_name}_cot-{mode}_{str(llm)}.jsonl"
     else:
         if text_ver:
             dataset = load_dataset('TMMU/tw-text-exam-bench', subject_name, split='test')
@@ -114,7 +118,7 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False, src="exam"):
 
     stats = load_existing_entries(logging_file)
     full_path = os.path.join('execution_results', logging_file)
-    
+
     with open(full_path, 'a') as log_file:
         for idx, row in enumerate(tqdm(dataset, dynamic_ncols=True, initial=stats['total'])):
             if get_row_id(row) in stats['existing_entries']:
@@ -124,6 +128,8 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False, src="exam"):
                 continue
 
             system_prompt = BASELINE_PROMPT if src == 'exam' else MULTI_CHOICE_PROMPT
+            if src == 'mmmu':
+                system_prompt = EN_BASELINE_PROMPT
             log_entry = process_question(row, llm, system_prompt, mode, stats, leetspeak=False, src=src)
             json.dump(log_entry, log_file)
             log_file.write('\n')
