@@ -1,14 +1,16 @@
 import os
 import json
-import numpy as np
+import math
 import argparse
 from tqdm import tqdm
+import numpy as np
 from datasets import load_dataset
 from llms.utils import get_llm
 from .prompts import HUMAN_GUIDELINE
 
 
 def evaluate(judge, preds, output_path, major_vote_count=5, include_image=False):
+    print('include image', include_image)
     thread_id2image = {}
     thread_id2gt = {}
     thread_id2question = {}
@@ -58,15 +60,16 @@ def evaluate(judge, preds, output_path, major_vote_count=5, include_image=False)
 
             # Get multiple evaluations from judge
             responses = []
-            for _ in range(int(major_vote_count*2)):  # Try up to 10 times to get major_vote_count valid responses
+            for _ in range(int(major_vote_count*1.5)):  # Try up to 10 times to get major_vote_count valid responses
                 response, stats = judge(prompt, image, temperature=0.7)
                 try:
                     score = int(response.split('[評分]: ')[-1])
-                    responses.append({
-                        'response': response,
-                        'score': score,
-                        'stats': stats
-                    })
+                    if not math.isnan(score):# don't ask me what happen here, it just happened
+                        responses.append({
+                            'response': response,
+                            'score': score,
+                            'stats': stats
+                        })
                 except ValueError:
                     continue
 
@@ -92,7 +95,7 @@ def evaluate(judge, preds, output_path, major_vote_count=5, include_image=False)
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Evaluate LLM responses")
     parser.add_argument("--input_jsonl", required=True, help="Input JSONL which contains question_id, llm_response")
-    parser.add_argument("--series", default="gemini", choices=["gemini_dev", "gemini"], help="LLM series")
+    parser.add_argument("--series", default="gemini", choices=["gemini_dev", "gemini", "openai"], help="LLM series")
     parser.add_argument("--model", default="gemini-2.0-flash-001", help="Model name")
     parser.add_argument("--include_image", action="store_true", help="Include images in evaluation")
     parser.add_argument("--voting_count", type=int, default=5, help="Number of evaluations per response")
@@ -178,7 +181,10 @@ def main():
     # Create output filename based on input file and arguments
     input_base = os.path.basename(args.input_jsonl).replace(".jsonl", "")
     output_dir = os.path.join(os.path.dirname(args.input_jsonl), "score_board")
-    output_filename = f"{input_base}_scores_{args.model}_{args.series}_img{int(args.include_image)}_vote{args.voting_count}.jsonl"
+    model_name = args.model
+    if '/' in model_name:
+        model_name = model_name.split('/')[-1].split(':')[0]
+    output_filename = f"{input_base}_scores_{model_name}_{args.series}_img{int(args.include_image)}_vote{args.voting_count}.jsonl"
     output_path = os.path.join(output_dir, output_filename)
 
     # Initialize judge LLM

@@ -7,10 +7,12 @@ class OpenAIChat():
     TOP_LOGPROBS = 4
 
     def __init__(self, model_name='gpt-3.5-turbo-0125') -> None:
-        params = {'api_key': os.environ['OAI_KEY']}
+        params = {}
         if os.getenv('CUSTOM_API_URL') and 'gpt-' not in model_name:
             params['base_url'] = os.environ['CUSTOM_API_URL']
             params['api_key'] = os.environ['CUSTOM_API_KEY']
+        else:
+            params = {'api_key': os.environ['OAI_KEY']}
         self.client = OpenAI(**params)
         self.model_name = model_name
 

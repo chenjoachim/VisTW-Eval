@@ -110,10 +110,10 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False, src="exam"):
         logging_file = f"mmmu_{subject_name}_cot-{mode}_{str(llm)}.jsonl"
     else:
         if text_ver:
-            dataset = load_dataset('TMMU/tw-text-exam-bench', subject_name, split='test')
+            dataset = load_dataset('VisTai/mcq-text', subject_name, split='test')
             logging_file = f"{subject_name}_text-cot-{mode}_{str(llm)}.jsonl"
         else:
-            dataset = load_dataset('TMMU/tw-vision-exam-bench', subject_name, split='test')
+            dataset = load_dataset('VisTai/mcq-vision', subject_name, split='test')
             logging_file = f"{subject_name}_cot-{mode}_{str(llm)}.jsonl"
 
     stats = load_existing_entries(logging_file)

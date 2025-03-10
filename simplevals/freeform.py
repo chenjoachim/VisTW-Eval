@@ -43,7 +43,7 @@ def resize_image(img, scale_factor=0.5):
         # Calculate new dimensions (50% of original)
         new_width = int(width * scale_factor)
         new_height = int(height * scale_factor)
-        
+
         # Resize the image
         resized_img = img.resize((new_width, new_height), Image.LANCZOS)
         return resized_img
@@ -81,7 +81,7 @@ def process_question(row, llm, mode, stats, system_prompt='', resize=None):
 
 
 def eval_dataset(llm, mode="image", text_ver=False, system_prompt='', resize=None):
-    dataset = load_dataset('TMMU/freeform', split='test')
+    dataset = load_dataset('VisTai/dialogue', split='test')
     if len(system_prompt) == 0:
         logging_file = f"{str(llm)}.jsonl"
     else:

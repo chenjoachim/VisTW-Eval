@@ -136,6 +136,7 @@ def fallback_llm_as_parser(llm, response, valid_choice):
 
 def is_both_same(llm, response, valid_choice):
     prompt = answer_comparison.format(valid_choice=valid_choice, response=response)
+    print(prompt)
     res_text, _ = llm(prompt)
     return res_text.strip().lower()
 
@@ -188,7 +189,7 @@ def evaluate_response(log_entry, mode, stats, sampler):
         if match:
             extracted_answer = normalize_extracted_answer(match.group(1))
         else:
-            extracted_answer = log_entry['ground_truth']
+            extracted_answer = log_entry['normalized_response']
 
         if 'true' in is_both_same(sampler, extracted_answer, ",".join(log_entry['ground_truth'])):
             stats['hit'] += 1
