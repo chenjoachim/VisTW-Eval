@@ -1,6 +1,6 @@
 # Benchmarking Vision-Language Models for Traditional Chinese in Taiwan
 
-<p align="center"> <img src="static/cover.jpg" style="width: 50%; max-width: 400px" id="title-icon">       </p>
+<p align="center"> <img src="static/cover.jpg" style="width: 80%; max-width: 800px" id="title-icon">       </p>
 
 VisTW consists of two subsets: (1) MCQ - a collection of multiple-choice questions from 21 academic subjects (answer choices omitted for space); and (2) Dialogue - real-life images with corresponding questions requiring understanding of Traditional Chinese and Taiwan-specific cultural context.
 
