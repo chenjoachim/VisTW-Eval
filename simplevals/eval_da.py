@@ -59,7 +59,7 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False):
         dataset = load_dataset('VisTai/mcq-text', subject_name, split='test')
         logging_file = f"{subject_name}_text-da-{mode}_{str(llm)}.jsonl"
     else:
-        dataset = load_dataset('VisTai/mcq-vision', subject_name, split='test')
+        dataset = load_dataset('VisTai/vistw-mcq', subject_name, split='test')
         logging_file = f"{subject_name}_da-{mode}_{str(llm)}.jsonl"
 
     stats = load_existing_entries(logging_file)

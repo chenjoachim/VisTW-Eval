@@ -37,13 +37,17 @@ class TogetherModel:
             logprobs=self.TOP_LOGPROBS,
             **kwargs
         )
+        if res.choices[0].logprobs:
+            log_prob_seq = [ [{"token": lp[0], "logprob": lp[1]} ] for lp in zip(res.choices[0].logprobs.tokens, res.choices[0].logprobs.token_logprobs) ]
+        else:
+            log_prob_seq = []
         res_text = res.choices[0].message.content
         res_info = {
             "input": prompt,
             "output": res_text,
             "num_input_tokens": res.usage.prompt_tokens,
             "num_output_tokens": res.usage.completion_tokens,
-            "logprobs": []
+            "logprobs": log_prob_seq
         }
         return res_text, res_info
 

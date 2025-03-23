@@ -81,7 +81,7 @@ def process_question(row, llm, mode, stats, system_prompt='', resize=None):
 
 
 def eval_dataset(llm, mode="image", text_ver=False, system_prompt='', resize=None):
-    dataset = load_dataset('VisTai/dialogue', split='test')
+    dataset = load_dataset('VisTai/vistw-dialogue', split='test')
     if len(system_prompt) == 0:
         logging_file = f"{str(llm)}.jsonl"
     else:
