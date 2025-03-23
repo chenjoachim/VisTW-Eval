@@ -5,9 +5,7 @@
 VisTW consists of two subsets: (1) MCQ - a collection of multiple-choice questions from 21 academic subjects (answer choices omitted for space); and (2) Dialogue - real-life images with corresponding questions requiring understanding of Traditional Chinese and Taiwan-specific cultural context.
 
 | Model | VisTW-Dialogue |  | VisTW-MCQ |  | Avg |
-| --- | ---: | ---: | ---: | ---: | ---: |
 |  | **Score 0-10** | **Rank** | **Accuracy** | **Rank** | **Rank** |
-| --- | ---: | ---: | ---: | ---: | ---: |
 | Gemini-2.0-pro-exp-02-05 | 6.72 | 1 | 0.6619 | 1 | 1.0 |
 | Gemini-2.0-flash-001 | 6.15 | 3 | 0.6596 | 2 | 2.5 |
 | gpt-4o-2024-11-20 | 6.12 | 4 | 0.5755 | 4 | 4.0 |
