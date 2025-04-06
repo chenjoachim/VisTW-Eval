@@ -4,42 +4,51 @@
 
 VisTW consists of two subsets: (1) MCQ - a collection of multiple-choice questions from 21 academic subjects (answer choices omitted for space); and (2) Dialogue - real-life images with corresponding questions requiring understanding of Traditional Chinese and Taiwan-specific cultural context.
 
+# VisTW Leaderboard (2025/04/06)
 
 
-| Model | VisTW-Dialogue |  | VisTW-MCQ |  | Avg |
+| Model | VisTW-MCQ |  | VisTW-Dialogue |  | Avg |
 |-------|------------------------|----------|---------------------------------|----------|----------|
-|  | **Score 0-10** | **Rank** | **Accuracy** | **Rank** | **Rank** |
-| Gemini-2.0-pro-exp-02-05 | 6.72 | 1 | 0.6619 | 1 | 1.0 |
-| Gemini-2.0-flash-001 | 6.15 | 3 | 0.6596 | 2 | 2.5 |
-| gpt-4o-2024-11-20 | 6.12 | 4 | 0.5755 | 4 | 4.0 |
-| Claude-3-5-sonnet-20241022 | 5.96 | 6 | 0.6019 | 3 | 4.5 |
-| Gemini-2.0-flash-lite-preview-02-05 | 5.92 | 7 | 0.4992 | 6 | 6.5 |
-| Qwen2.5-VL-72B-instruct | 4.87 | 9 | 0.5413 | 5 | 7.0 |
-| Gemini-1.5-pro | 5.05 | 8 | 0.4417 | 9 | 8.5 |
-| Gemini-2.0-flash-thinking-exp-1219 | 6.51 | 2 | 0.3764 | 15 | 8.5 |
-| gpt-4o-2024-08-06 | 5.98 | 5 | 0.4000 | 13 | 9.0 |
-| Mistral-Small-3.1-24B | 4.33 | 12 | 0.4590 | 8 | 10.0 |
-| Qwen2-VL-72B-instruct | 4.21 | 14 | 0.4701 | 7 | 10.5 |
-| gpt-4o-mini-2024-07-18 | 4.74 | 10 | 0.4091 | 12 | 11.0 |
-| Gemma3-27b-it | 3.94 | 17 | 0.4375 | 10 | 13.5 |
-| Qwen2.5-VL-7B-Instruct | 4.54 | 11 | 0.3592 | 16 | 13.5 |
-| Gemini-1.5-flash | 4.26 | 13 | 0.3943 | 14 | 13.5 |
-| Llama-3.2-90B-Vision-Instruct | 3.44 | 22 | 0.4119 | 11 | 16.5 |
-| InternVL2.5-8B | 3.90 | 18 | 0.3447 | 17 | 17.5 |
-| Gemini-1.5-flash-8B | 4.18 | 16 | 0.3280 | 22 | 19.0 |
-| InternVL2-8B | 3.45 | 21 | 0.3431 | 18 | 19.5 |
-| Claude-3-haiku-20240307 | 3.70 | 19 | 0.3291 | 20 | 19.5 |
-| Qwen2-VL-7B-Instruct | 4.21 | 15 | 0.3004 | 26 | 20.5 |
-| InternVL2.5-4B | 3.60 | 20 | 0.3291 | 21 | 20.5 |
-| Nova-lite-v1 | 3.26 | 23 | 0.3376 | 19 | 21.0 |
-| Llama-3.2-11B-Vision-Instruct | 2.58 | 27 | 0.3262 | 23 | 25.0 |
-| Breeze2-8B-Instruct | 3.14 | 24 | 0.2915 | 28 | 26.0 |
-| Breeze2-3B-Instruct | 2.90 | 26 | 0.2971 | 27 | 26.5 |
-| InternVL2-4B | 2.31 | 28 | 0.3081 | 25 | 26.5 |
-| Deepseek-vl2-small | 0.51 | 30 | 0.3181 | 24 | 27.0 |
-| CogVLM2-llama3-chinese-chat | 2.96 | 25 | 0.2777 | 30 | 27.5 |
-| InternVL2-2B | 2.22 | 29 | 0.2891 | 29 | 29.0 |
-
+|  | **Accuracy** | **Rank** | **Score 0-10** | **Rank** | **Rank** |
+| ~~gemini-2.0-pro-exp-02-05~~ | 0.6619 | 2 | 6.7237 | 1 | 1.5 |
+| gemini-2.0-flash-001 | 0.6596 | 3 | 6.6451 | 2 | 2.5 |
+| quasar-alpha | 0.6673 | 1 | 6.2733 | 5 | 3.0 |
+| gpt-4o-2024-11-20 | 0.5755 | 6 | 6.1176 | 6 | 6.0 |
+| claude-3-5-sonnet-20241022 | 0.6019 | 5 | 5.9603 | 8 | 6.5 |
+| gemini-2.0-flash-lite-preview-02-05 | 0.4992 | 9 | 6.4159 | 4 | 6.5 |
+| llama-4-maverick | 0.6529 | 4 | 4.884 | 11 | 7.5 |
+| qwen2.5-vl-72b-instruct | 0.5504 | 7 | 4.8656 | 12 | 9.5 |
+| qwen2.5-vl-32b-instruct | 0.4935 | 10 | 5.5027 | 9 | 9.5 |
+| gemini-2.0-flash-thinking-exp-1219 | 0.3764 | 19 | 6.5053 | 3 | 11.0 |
+| gemini-1.5-pro | 0.4417 | 13 | 5.0504 | 10 | 11.5 |
+| gpt-4o-2024-08-06 | 0.4 | 17 | 5.9756 | 7 | 12.0 |
+| llama-4-scout | 0.5292 | 8 | 4.0943 | 19 | 13.5 |
+| mistral-small-3.1-24b-instruct-2503 | 0.459 | 12 | 4.3298 | 15 | 13.5 |
+| gpt-4o-mini-2024-07-18 | 0.4091 | 16 | 4.7405 | 13 | 14.5 |
+| gemma-3-12b-it | 0.4863 | 11 | 3.9403 | 20 | 15.5 |
+| gemini-1.5-flash | 0.3943 | 18 | 4.2611 | 16 | 17.0 |
+| Qwen-Qwen2.5-VL-7B-Instruct | 0.3592 | 20 | 4.542 | 14 | 17.0 |
+| qvq-72b-preview | 0.4094 | 15 | 3.6122 | 24 | 19.5 |
+| meta-llama-Llama-3.2-90B-Vision-Instruct-Turbo | 0.4119 | 14 | 3.4443 | 27 | 20.5 |
+| OpenGVLab-InternVL2_5-8B | 0.3447 | 22 | 3.9008 | 21 | 21.5 |
+| OpenGVLab-InternVL2-8B-MPO | 0.3533 | 21 | 3.6778 | 23 | 22.0 |
+| gemini-1.5-flash-8b | 0.328 | 27 | 4.1771 | 18 | 22.5 |
+| claude-3-haiku-20240307 | 0.3291 | 25 | 3.6992 | 22 | 23.5 |
+| OpenGVLab-InternVL2-8B | 0.3431 | 23 | 3.4504 | 26 | 24.5 |
+| Qwen-Qwen2-VL-7B-Instruct | 0.3004 | 32 | 4.2122 | 17 | 24.5 |
+| OpenGVLab-InternVL2_5-4B | 0.3291 | 26 | 3.6031 | 25 | 25.5 |
+| nova-lite-v1 | 0.3377 | 24 | 3.2626 | 28 | 26.0 |
+| llama3.2-ffm-11b-v-32k-chat | 0.3119 | 30 | 3.115 | 30 | 30.0 |
+| meta-llama-Llama-3.2-11B-Vision-Instruct-Turbo | 0.3262 | 28 | 2.5786 | 33 | 30.5 |
+| MediaTek-Research-Llama-Breeze2-8B-Instruct | 0.2915 | 34 | 3.1374 | 29 | 31.5 |
+| OpenGVLab-InternVL2-4B | 0.3081 | 31 | 2.3069 | 34 | 32.5 |
+| MediaTek-Research-Llama-Breeze2-3B-Instruct | 0.2971 | 33 | 2.8992 | 32 | 32.5 |
+| deepseek-ai-deepseek-vl2-small | 0.3181 | 29 | 0.5084 | 39 | 34.0 |
+| THUDM-cogvlm2-llama3-chinese-chat-19B | 0.2777 | 38 | 2.9618 | 31 | 34.5 |
+| OpenGVLab-InternVL2-2B | 0.2891 | 35 | 2.2198 | 35 | 35.0 |
+| phi-4-multimodal-instruct | 0.286 | 36 | 1.7863 | 38 | 37.0 |
+| deepseek-ai-deepseek-vl2-tiny | 0.2781 | 37 | 2.0076 | 37 | 37.0 |
+| OpenGVLab-InternVL2-1B | 0.2689 | 39 | 2.1298 | 36 | 37.5 |
 
 ## Setup
 
