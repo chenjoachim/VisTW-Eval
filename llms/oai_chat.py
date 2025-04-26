@@ -17,30 +17,24 @@ class OpenAIChat():
         self.model_name = model_name
 
     def __str__(self):
-        return self.model_name.split('/')[-1]
+        return self.model_name.split('/')[-1].replace(':free', '')
 
     @retry_with_exponential_backoff
-    def __call__(self, prompt: str, image=None, max_tokens=2048, top_p=0.95, temperature=0.0, **kwargs) -> tuple[str, dict]:
+    def __call__(self, prompt: str, image=None, max_tokens=1024, top_p=0.95, temperature=0.0, **kwargs) -> tuple[str, dict]:
         content = [{'type': 'text', 'text': prompt}]
         if image is not None:
             content.append({'type': 'image_url', 
                             'image_url': {'url': convert_pil2url(image)}
                         })
-        
-        params = {
-            'max_tokens': int(max_tokens),
-            'temperature': float(temperature),
-            'top_p': float(top_p),
-            'logprobs': True,
-            'top_logprobs': self.TOP_LOGPROBS,
-            **kwargs
-        }
-        if 'o' == self.model_name[0]:
-            params = {}
         response = self.client.chat.completions.create(
             model=self.model_name,
             messages=[{'role': 'user', 'content': content}],
-            **params
+            # temperature=float(temperature),
+            # max_tokens=int(max_tokens),
+            # top_p=float(top_p),
+            # logprobs=True,
+            # top_logprobs=self.TOP_LOGPROBS,
+            **kwargs
         )
         if response.choices[0].logprobs:
             log_prob_seq = response.choices[0].logprobs.content

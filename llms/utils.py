@@ -82,6 +82,9 @@ def get_llm(model_name: str, series: str = None):
     elif series == 'thudm':
         from llms.cogvlm2 import CogVLM2
         return CogVLM2(model_name)
+    elif series == 'kimi':
+        from llms.kimi_moe import KimiVL
+        return KimiVL(model_name)
     elif series == 'breeze2':
         from llms.breeze2 import Breeze2
         return Breeze2(model_name)
