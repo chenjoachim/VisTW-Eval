@@ -28,7 +28,7 @@ MULTI_CHOICE_PROMPT = """回答以下的多选题问题。并且在回覆的最�
 
 """
 
-choices = "ABCDEFG"
+choices = "ABCDEFGHI"
 
 sampler = get_llm('gpt-4o-mini')
 
@@ -48,7 +48,7 @@ def get_question(row):
 
 def format_question(row, mode, leetspeak=False):
     question = row['question']
-    for idx, choice in enumerate(choices):
+    for idx, choice in enumerate(choices[:4]):
         question += f'\n{choice}. {row[choice]}'
     return question
 

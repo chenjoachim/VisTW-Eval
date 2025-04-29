@@ -40,7 +40,7 @@ class Gemma3():
         input_len = inputs["input_ids"].shape[-1]
 
         with torch.inference_mode():
-            generation = self.model.generate(**inputs, max_new_tokens=100, do_sample=False)
+            generation = self.model.generate(**inputs, max_new_tokens=max_tokens, do_sample=False)
             generation = generation[0][input_len:]
 
         decoded = self.processor.decode(generation, skip_special_tokens=True)
