@@ -89,7 +89,7 @@ def process_question(row, llm, system_prompt, mode, stats, leetspeak=False, src=
 
     res_text, res_info = llm(log_entry["full_prompt"],
                              image=None if mode == 'text' else image,
-                             max_tokens=2048
+                             max_tokens=512
                 )
     log_entry.update({
         "llm_response": res_text,
