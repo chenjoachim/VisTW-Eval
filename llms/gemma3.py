@@ -10,11 +10,16 @@ from torchvision.transforms import InterpolationMode
 from transformers import Gemma3ForConditionalGeneration, AutoProcessor, AutoTokenizer
 from transformers import BitsAndBytesConfig
 
+import torch._dynamo
+torch._dynamo.config.cache_size_limit = 256
+torch._dynamo.config.accumulated_cache_size_limit = 1024
+
+
 class Gemma3():
 
     def __init__(self, model_name="google/gemma-3-12b-it") -> None:
         self.model = Gemma3ForConditionalGeneration.from_pretrained(
-            model_name, device_map="auto"
+            model_name, device_map="cuda", torch_dtype=torch.bfloat16
         ).eval()
         self.processor = AutoProcessor.from_pretrained(model_name)
         self.model_name = model_name

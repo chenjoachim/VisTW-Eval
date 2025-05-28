@@ -89,7 +89,10 @@ def process_question(row, llm, system_prompt, mode, stats, leetspeak=False, src=
 
     res_text, res_info = llm(log_entry["full_prompt"],
                              image=None if mode == 'text' else image,
-                             max_tokens=512
+                             max_tokens=512,
+                             top_p=None,
+                             top_k=None,
+                             temperature=None
                 )
     log_entry.update({
         "llm_response": res_text,
@@ -119,7 +122,7 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False, src="exam"):
     stats = load_existing_entries(logging_file)
     full_path = os.path.join('execution_results', logging_file)
 
-    with open(full_path, 'a') as log_file:
+    with open(full_path, 'a', encoding='utf-8') as log_file:
         for idx, row in enumerate(tqdm(dataset, dynamic_ncols=True, initial=stats['total'])):
             if get_row_id(row) in stats['existing_entries']:
                 continue
@@ -131,7 +134,7 @@ def eval_dataset(llm, subject_name, mode="image", text_ver=False, src="exam"):
             if src == 'mmmu':
                 system_prompt = EN_BASELINE_PROMPT
             log_entry = process_question(row, llm, system_prompt, mode, stats, leetspeak=False, src=src)
-            json.dump(log_entry, log_file)
+            json.dump(log_entry, log_file, indent=4, ensure_ascii=False)
             log_file.write('\n')
             log_file.flush()
 
